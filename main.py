@@ -21,14 +21,18 @@ def get_heating_thermostat_as_json(device):
 @app.route('/homematic/devices')
 def homematic_devices():
     home.get_current_state()
-    response = {}
+    response = []
     for group in home.groups:
+        room = {
+            "room": group.label,
+            "devices": []
+        }
         if group.groupType == "META":
             for device in group.devices:
                 if isinstance(device, HeatingThermostat):
-                    if not response.__contains__(group.label):
-                        response[group.label] = []
-                    response[group.label] = get_heating_thermostat_as_json(device)
+                    room["devices"].append(get_heating_thermostat_as_json(device))
+
+            response.append(room)
     response = app.response_class(
         response=json.dumps(response),
         status=200,
