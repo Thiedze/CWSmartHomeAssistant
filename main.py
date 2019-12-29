@@ -2,7 +2,6 @@ import json
 
 import homematicip
 from flask import Flask
-from homematicip.device import HeatingThermostat
 from homematicip.home import Home
 
 config = homematicip.find_and_load_config_file()
@@ -29,8 +28,7 @@ def homematic_devices():
         }
         if group.groupType == "META":
             for device in group.devices:
-                if isinstance(device, HeatingThermostat):
-                    room["devices"].append(get_heating_thermostat_as_json(device))
+                room["devices"].append(get_heating_thermostat_as_json(device))
 
             response.append(room)
     response = app.response_class(
