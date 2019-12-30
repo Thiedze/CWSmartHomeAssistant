@@ -39,5 +39,22 @@ def homematic_devices():
     return response
 
 
+@app.route('/homematic/devices/<device_id>')
+def homematic_device(device_id):
+    home.get_current_state()
+    for group in home.groups:
+        if group.groupType == "META":
+            for device in group.devices:
+                if device.id == device_id:
+                    return app.response_class(
+                        response=json.dumps(get_heating_thermostat_as_json(device)),
+                        status=200,
+                        mimetype='application/json')
+    return app.response_class(
+        response=None,
+        status=404,
+        mimetype='application/json')
+
+
 if __name__ == '__main__':
     app.run()
